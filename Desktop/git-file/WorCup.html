@@ -1,0 +1,115 @@
+<html>
+
+<head>
+
+   <title>Football World Cup</title>
+
+<p id="demo"></p>
+
+</head>
+
+<body onload="getData()">
+   <h2> FIFA World Cup </h2>
+   <table border="5" cellpadding="10" bgcolor="pink">
+       <form name="demo">
+      
+ <tr>
+   <td>
+       <select id="IdCompetition" style="width: 165px; margin-right: 30px;">
+
+
+         
+       </select>
+
+   </td>
+</tr>
+
+<tr>
+ <td><input type="button" value="See Result"  class="loadButton" name="res"    style="width: 100px; color:green;"></input>&nbsp;&nbsp;
+ <input type="button" value="Clear"  class="clcW" name="cWorld"    style="width: 100px; color:red;"></input></td>
+</tr>
+<tr><td><textarea  id="txt"  name="txtW" rows="30" cols="50">
+
+</textarea></td></tr>
+
+</form>
+</table>
+<script  src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+var msg;
+var h=new Array;
+var aa=new Array;
+var aname=new Array;
+var st=new Array;
+var city=new Array;
+var attem=new Array;
+var offn=new Array;
+var weather=new Array;
+var  temp=new Array;
+var wind=new Array;
+var hn=new Array;
+function getData(){
+    $.ajax({
+        url         : "https://api.fifa.com/api/v1/calendar/matches?idseason=254645&idcompetition=17&language=en-GB&count=100",
+            type        : "GET",
+            contentType : "application/json",
+            dataType    : "json",
+            processData : false,
+            cache       : false,
+    }).done(function( msgg ) {
+         msg=msgg.Results;
+        $.each(msg, function(key, value) {
+            for(var i=0;i<64;i++){ 
+            var l=msg[i].Home.TeamName[0].Description;
+
+             hn[i]=msg[i].Home.TeamName[0].Description;
+             h[i]= msg[i].HomeTeamScore;
+             aa[i]=msg[i].AwayTeamScore;
+             aname[i]=msg[i].Away.TeamName[0].Description;
+             st[i]=msg[i].Stadium.Name[0].Description;
+             city[i]=msg[i].Stadium.CityName[0].Description;
+             attem[i]=msg[i].Attendance;
+             offn[i]=msg[i].Officials[0].Name[0].Description;
+             weather[i]=msg[i].Weather.TypeLocalized[0].Description;
+             temp[i]=msg[i].Weather.Temperature;
+             wind[i]=msg[i].Weather.WindSpeed;
+
+            var sel=$('#IdCompetition');
+            if(!sel.find('option[value="'+l+'"]').length){
+               
+              
+              sel.append($('<option>', { value :l,text:l }));
+                } }
+         } );
+              
+        
+        });
+    }
+    
+    $(".loadButton").click(function(e){
+        
+        var e = document.getElementById("IdCompetition");
+        var cur = e.options[e.selectedIndex].value;
+        
+            for(var j=0;j<h.length && attem.length && city.length && st.length && offn.length && weather.length && temp.length && wind.length;j++){ 
+               
+               if(cur==hn[j] || cur==aname[j]){
+                 
+                 
+                   document.demo.txtW.value+=hn[j]+" "+h[j]+"-"+aa[j]+" "+aname[j]+"("+st[j]+"["+city[j]+"]"+"+"+attem[j]+")"+"\n"+"Referce Name:"+offn[j]+"\n"+"Weather condition:"+weather[j]+"\n"+"Temperature is:"+temp[j]+"\n"+"WindSpeed is:"+wind[j]+"\n\n"; 
+                     }
+     }
+       });
+
+$(".clcW").click(function(){
+    
+    document.demo.txtW.value=" ";
+    $("#IdCompetition").val('Russia');
+
+});
+
+
+</script>
+
+</body>
+</html>
